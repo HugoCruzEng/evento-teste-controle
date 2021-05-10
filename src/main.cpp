@@ -13,14 +13,13 @@
 #endif
 #include <ModbusIP_ESP8266.h>
 
-#include <PID_v1.h>
+#include <mcp.h>
 
-// Variáveis PID
-//Define Variables we'll be connecting to
-double Setpoint, Input, Output;
-//Specify the links and initial tuning parameters
-double Kp=0.009, Ki=0.26, Kd=0;
-PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+bool statusMCPBE=0;
+unsigned int mcpBE_RPM=0;
+unsigned int mcpBE_PosAtuador=0;
+
+mcp MCP_BE(statusMCPBE, mcpBE_RPM, mcpBE_PosAtuador, 0.009, 0.26, 0);
 
 //Variaveis de interface com a SIMULACAO
 //ENTRADAS
@@ -61,7 +60,6 @@ const int OFFSET_COIL_OUT_IHM=NUM_IN_COIL;
 const int NUM_OUT_COIL=1;
 bool REG_COIL_OUT_IHM [NUM_OUT_COIL]={false};
 
-
 int TOTAL_REG_IHM=NUM_OUT_IHM+NUM_IN_IHM;
 int TOTAL_COIL_IHM=NUM_IN_COIL+NUM_OUT_COIL;
 
@@ -71,63 +69,54 @@ IPAddress remote(192, 168, 0, 5);    // Address of Modbus Slave device
 
 ModbusIP mb,mbIHM;  // ModbusIP object
 
-bool statusMCP=false;
-
 long ts;
 
 uint16_t writeROTACAO_MCP(TRegister* reg, uint16_t val) {
-    REG_IN_IHM[IC_AN_MCP_ROTACAO] = val;
-    Setpoint=REG_IN_IHM[IC_AN_MCP_ROTACAO];
-    Input=REG_IN_SIMU[SC_AN_MCP_ROTACAO];
-    //refreshVisor = HIGH;
+    REG_IN_IHM[IC_AN_MCP_ROTACAO] = MCP_BE.getRotacaoMCP();
+    MCP_BE.setSetPoint(REG_IN_IHM[IC_AN_MCP_ROTACAO]);
+    MCP_BE.setRealimentacao(REG_IN_SIMU[SC_AN_MCP_ROTACAO]);
+    
   return val;
 }
 
 uint16_t partirMCP(TRegister* reg, uint16_t val) {
      if(val){
-      statusMCP=true;
-      Setpoint = REG_IN_IHM[IC_AN_MCP_ROTACAO];
-      Input = REG_IN_SIMU [SC_AN_MCP_ROTACAO];
+      MCP_BE.partirMCP();
+      statusMCPBE=MCP_BE.getStatusMCP();
+      MCP_BE.setSetPoint(REG_IN_IHM[IC_AN_MCP_ROTACAO]);
+      MCP_BE.setRealimentacao(REG_IN_SIMU [SC_AN_MCP_ROTACAO]);
      
-      //turn the PID on
-      myPID.SetMode(AUTOMATIC);
-
       //REG_OUT_SIMU[CS_AN_MCP_POSATUADOR] = (uint16) Output;
-      REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]=Output;
+      REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]=MCP_BE.getPosAtuador();
 
-      Serial.println(Setpoint);
-      Serial.println(Input );
-      Serial.println(Output );
+      Serial.println(MCP_BE.getSetPoint());
+      Serial.println(MCP_BE.getRealimentacao());
+      Serial.println(MCP_BE.getRotacaoMCP());
      }
      
-         //refreshVisor = HIGH;
   return val;
 }
 
 uint16_t pararMCP(TRegister* reg, uint16_t val) {
   if( val != 0 ){
        //turn the PID off
-        Setpoint = 0;
-        statusMCP=false;
+       MCP_BE.setSetPoint(0);
   }
   return val;
 }
 
 uint16_t writePID_P(TRegister* reg, uint16_t val) {
-  Kp=val;
-  myPID.SetTunings(Kp,Ki,Kd);
+  MCP_BE.setKp(val);
   return val;
 }
 
 uint16_t writePID_I(TRegister* reg, uint16_t val) {
-  Ki=val;
-  myPID.SetTunings(Kp,Ki,Kd);
+  MCP_BE.setKi(val);
   return val;
 }
 
 uint16_t writePID_D(TRegister* reg, uint16_t val) {
-  Kd=val;
-  myPID.SetTunings(Kp,Ki,Kd);
+  MCP_BE.setKd(val);
   return val;
 }
 
@@ -140,25 +129,6 @@ bool cb(Modbus::ResultCode event, uint16_t transactionId, void* data) { // Modbu
   }
   return true;
 }
-
-void processaPID(){
-  //if( (REG_OUT_SIMU[0] != Input) || ( REG_IN_SIMU[SC_AN_MCP_ROTACAO] =! Setpoint)){
-  Input = REG_IN_SIMU [SC_AN_MCP_ROTACAO];
-
-  if(statusMCP){
-    Setpoint=REG_IN_IHM[IC_AN_MCP_ROTACAO];
-  }
-  else {
-    Setpoint=0;
-  }
-  
-  myPID.Compute();
-
-  REG_OUT_SIMU[CS_AN_MCP_POSATUADOR] = Output;
-    
-  //}
-}
-
 
 void setup() {
   Serial.begin(115200);
@@ -216,7 +186,7 @@ void loop() {
 
 if (!show--) { 
     //Função PID 0
-    processaPID();
+    REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]=MCP_BE.processaPID(REG_IN_SIMU [SC_AN_MCP_ROTACAO],REG_IN_IHM[IC_AN_MCP_ROTACAO]);
 
     Serial.print(REG_IN_SIMU[SC_AN_MCP_ROTACAO]);
     Serial.print(" ");
@@ -231,8 +201,6 @@ if (!show--) {
     else if(REG_IN_SIMU[SC_AN_MCP_ROTACAO]<300){
       REG_OUT_IHM[CI_DG_MCP_FUNCIONANDO]=false;
     }
-
-
     show = 100;
   } 
     //ATUALIZA ESCRITAS
