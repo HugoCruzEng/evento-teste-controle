@@ -1,22 +1,24 @@
 
-#include <PID_v1.h>
+
 #include <mcp.h>
+#include <PID_v1.h>
+//teste
 
-
-mcp::mcp(bool mcp_Status, double mcp_RPM, double mcp_PosAtuador, double Kp, double Ki, double Kd){
+mcp::mcp(bool mcp_Status, double mcp_RPM, double mcp_PosAtuador, double STpoint, double Kp, double Ki, double Kd){
     myStatusMCP=mcp_Status;
     myRotacao=mcp_RPM;
     Realimentacao=myRotacao;
     myPosAtuador=mcp_PosAtuador;
+    Setpoint=STpoint;
     myKp=Kp;
     myKi=Ki;
     myKd=Kd;
 
     //Specify the links and initial tuning parameters
     //double Kp=0.009, Ki=0.26, Kd=0; //valores iniciais de controle
-    PID myPID(&Realimentacao, &myPosAtuador, &Setpoint, myKp, myKi, myKd, DIRECT);
+    myPID = new PID(&Realimentacao, &myPosAtuador, &Setpoint,Kp,Ki,Kd, DIRECT);
     //turn the PID on
-    myPID.SetMode(AUTOMATIC);
+    myPID->SetMode(AUTOMATIC);
     
 }
 
@@ -69,18 +71,18 @@ void mcp::setRealimentacao(double realimentacao){
 
 void mcp::setKp(double Kp){
     myKp=Kp;
-    myPID.SetTunings(myKp,myKi,myKd);
+    myPID->SetTunings(myKp,myKi,myKd);
 
 }
 
 void mcp::setKi(double Ki){
     myKi=Ki;
-    myPID.SetTunings(myKp,myKi,myKd);
+    myPID->SetTunings(myKp,myKi,myKd);
 }
 
 void mcp::setKd(double Kd){
     myKd=Kd;
-    myPID.SetTunings(myKp,myKi,myKd);
+    myPID->SetTunings(myKp,myKi,myKd);
 }
 
 double mcp::processaPID(double inputs, double setPoint){
@@ -93,6 +95,6 @@ double mcp::processaPID(double inputs, double setPoint){
   else {
     setSetPoint(0); 
   }
-    myPID.Compute();
+    myPID->Compute();
     return getRotacaoMCP();
 }

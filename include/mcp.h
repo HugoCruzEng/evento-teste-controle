@@ -1,7 +1,7 @@
-
 #ifndef mcp_h
 #define mcp_h
 
+#include <PID_v1.h>
 
 class mcp {
     public:
@@ -9,8 +9,9 @@ class mcp {
         #define mcpParado 0
         #define mcpFuncionando 1
 
+   
     //construtor
-        mcp();
+        mcp(bool, double, double, double, double, double, double);
 
         bool getStatusMCP();
         unsigned int getRotacaoMCP();
@@ -33,6 +34,8 @@ class mcp {
         double myRotacao=0;
         // Variáveis PID
         double Setpoint, Realimentacao, myPosAtuador, myKp, myKi, myKd;        
+        PID* myPID;
+
 };
 
 #endif

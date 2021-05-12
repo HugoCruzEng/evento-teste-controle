@@ -16,10 +16,11 @@
 #include <mcp.h>
 
 bool statusMCPBE=0;
-unsigned int mcpBE_RPM=0;
-unsigned int mcpBE_PosAtuador=0;
+double mcpBE_RPM=0;
+double mcpBE_PosAtuador=0;
+double mcpBE_setpoint=0;
 
-mcp MCP_BE(statusMCPBE, mcpBE_RPM, mcpBE_PosAtuador, 0.009, 0.26, 0);
+mcp MCP_BE(statusMCPBE, mcpBE_RPM, mcpBE_PosAtuador, mcpBE_setpoint,0.009, 0.26, 0);
 
 //Variaveis de interface com a SIMULACAO
 //ENTRADAS
