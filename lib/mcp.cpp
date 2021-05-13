@@ -7,19 +7,19 @@
 mcp::mcp(bool mcp_Status, double mcp_RPM, double mcp_PosAtuador, double STpoint, double Kp, double Ki, double Kd){
     myStatusMCP=mcp_Status;
     myRotacao=mcp_RPM;
-    Realimentacao=myRotacao;
+    myRealimentacao=myRotacao;
     myPosAtuador=mcp_PosAtuador;
-    Setpoint=STpoint;
+    mySetpoint=STpoint;
     myKp=Kp;
     myKi=Ki;
     myKd=Kd;
 
     //Specify the links and initial tuning parameters
     //double Kp=0.009, Ki=0.26, Kd=0; //valores iniciais de controle
-    myPID = new PID(&Realimentacao, &myPosAtuador, &Setpoint,Kp,Ki,Kd, DIRECT);
+    myPID = new PID(&myRealimentacao, &myPosAtuador, &mySetpoint,Kp,Ki,Kd, DIRECT);
+
     //turn the PID on
     myPID->SetMode(AUTOMATIC);
-    
 }
 
 bool mcp::getStatusMCP(){
@@ -41,10 +41,10 @@ void mcp::pararMCP(){
 void mcp::demandaRotacao(double demandRotacao){
     switch(myStatusMCP){
         case 0:
-            Setpoint=0;
+            mySetpoint=0;
             break;   
         case 1:
-            Setpoint=demandRotacao;
+            mySetpoint=demandRotacao;
             break;
         }
 }
@@ -54,25 +54,24 @@ double mcp::getPosAtuador(){
 }
 
 double mcp::getSetPoint(){
-    return Setpoint;
+    return mySetpoint;
 }
 
 double mcp::getRealimentacao(){
-    return Realimentacao;
+    return myRealimentacao;
 }
 
 void mcp::setSetPoint(double setpoints){
-    Setpoint=setpoints;
+    mySetpoint=setpoints;
 }
 
 void mcp::setRealimentacao(double realimentacao){
-    Realimentacao=realimentacao;
+    myRealimentacao=realimentacao;
 }
 
 void mcp::setKp(double Kp){
     myKp=Kp;
     myPID->SetTunings(myKp,myKi,myKd);
-
 }
 
 void mcp::setKi(double Ki){
@@ -87,7 +86,7 @@ void mcp::setKd(double Kd){
 
 double mcp::processaPID(double inputs, double setPoint){
   //if( (REG_OUT_SIMU[0] != Input) || ( REG_IN_SIMU[SC_AN_MCP_ROTACAO] =! Setpoint)){
-    setRealimentacao(inputs);
+setRealimentacao(inputs);
 
   if(myStatusMCP){
     setSetPoint(setPoint);
@@ -96,5 +95,5 @@ double mcp::processaPID(double inputs, double setPoint){
     setSetPoint(0); 
   }
     myPID->Compute();
-    return getRotacaoMCP();
+    return getPosAtuador();
 }

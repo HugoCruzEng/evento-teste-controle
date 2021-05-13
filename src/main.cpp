@@ -66,14 +66,14 @@ int TOTAL_COIL_IHM=NUM_IN_COIL+NUM_OUT_COIL;
 
 const int REG = 0;                   // Modbus Coils Offse
 const int COUNT = 5;                 // Count of Coils
-IPAddress remote(192, 168, 0, 5);    // Address of Modbus Slave device
+IPAddress remote(192, 168, 0, 5);    // Address of Modbus servidor Simulacao
 
 ModbusIP mb,mbIHM;  // ModbusIP object
 
-long ts;
+long ts; //não é usado mais. Retirar
 
 uint16_t writeROTACAO_MCP(TRegister* reg, uint16_t val) {
-    REG_IN_IHM[IC_AN_MCP_ROTACAO] = MCP_BE.getRotacaoMCP();
+    MCP_BE.demandaRotacao(val);
     MCP_BE.setSetPoint(REG_IN_IHM[IC_AN_MCP_ROTACAO]);
     MCP_BE.setRealimentacao(REG_IN_SIMU[SC_AN_MCP_ROTACAO]);
     
@@ -83,23 +83,23 @@ uint16_t writeROTACAO_MCP(TRegister* reg, uint16_t val) {
 uint16_t partirMCP(TRegister* reg, uint16_t val) {
      if(val){
       MCP_BE.partirMCP();
-      statusMCPBE=MCP_BE.getStatusMCP();
+      //statusMCPBE=MCP_BE.getStatusMCP();
       MCP_BE.setSetPoint(REG_IN_IHM[IC_AN_MCP_ROTACAO]);
       MCP_BE.setRealimentacao(REG_IN_SIMU [SC_AN_MCP_ROTACAO]);
      
       //REG_OUT_SIMU[CS_AN_MCP_POSATUADOR] = (uint16) Output;
       REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]=MCP_BE.getPosAtuador();
 
-      Serial.println(MCP_BE.getSetPoint());
-      Serial.println(MCP_BE.getRealimentacao());
-      Serial.println(MCP_BE.getRotacaoMCP());
+      //Serial.println(MCP_BE.getSetPoint());
+      //Serial.println(MCP_BE.getRealimentacao());
+      //Serial.println(MCP_BE.getRotacaoMCP());
      }
      
   return val;
 }
 
 uint16_t pararMCP(TRegister* reg, uint16_t val) {
-  if( val != 0 ){
+  if(val){
        //turn the PID off
        MCP_BE.setSetPoint(0);
   }
@@ -167,7 +167,6 @@ void setup() {
   //DECLARA FUNÇÕES ASSOCIADAS A ALTERAÇÃO DA LEITURA DOS coils
   mbIHM.onSetCoil(OFFSET_COIL_IN_IHM+IC_DG_MCP_PARTIR,partirMCP);
   mbIHM.onSetCoil(OFFSET_COIL_IN_IHM+IC_DG_MCP_PARAR,pararMCP);
- 
 }
 
 uint16 resInputSimu1=0;
@@ -185,7 +184,7 @@ void loop() {
     mb.task(); // Modbus task
     mbIHM.task();
 
-if (!show--) { 
+//if (!show--) { 
     //Função PID 0
     REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]=MCP_BE.processaPID(REG_IN_SIMU [SC_AN_MCP_ROTACAO],REG_IN_IHM[IC_AN_MCP_ROTACAO]);
 
@@ -202,8 +201,8 @@ if (!show--) {
     else if(REG_IN_SIMU[SC_AN_MCP_ROTACAO]<300){
       REG_OUT_IHM[CI_DG_MCP_FUNCIONANDO]=false;
     }
-    show = 100;
-  } 
+  //  show = 100;
+  //} 
     //ATUALIZA ESCRITAS
     //ESCRITA DAS SAIDA IHM
     //REGS

@@ -6,15 +6,12 @@
 class mcp {
     public:
     //estados do MCP
-        #define mcpParado 0
-        #define mcpFuncionando 1
-
+       // #define mcpParado 0
+       // #define mcpFuncionando 1
    
     //construtor
         mcp(bool, double, double, double, double, double, double);
 
-        bool getStatusMCP();
-        unsigned int getRotacaoMCP();
         void partirMCP();
         void pararMCP();
         void demandaRotacao(double);
@@ -23,6 +20,8 @@ class mcp {
         void setKp(double);
         void setKi(double);
         void setKd(double);
+        bool getStatusMCP();
+        unsigned int getRotacaoMCP();
         double getPosAtuador();
         double getSetPoint();
         double getRealimentacao();
@@ -33,8 +32,9 @@ class mcp {
         bool myStatusMCP=0;
         double myRotacao=0;
         // Variáveis PID
-        double Setpoint, Realimentacao, myPosAtuador, myKp, myKi, myKd;        
-        PID* myPID;
+        double mySetpoint, myRealimentacao, myPosAtuador, myKp, myKi, myKd;        
+        PID *myPID;
+        // PID myPID;
 
 };
 
