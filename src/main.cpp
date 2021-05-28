@@ -15,12 +15,15 @@
 
 #include <mcp.h>
 
-bool statusMCPBE=0;
-double mcpBE_RPM=0;
-double mcpBE_PosAtuador=0;
-double mcpBE_setpoint=0;
+bool statusMCPBE_init=0;
+double mcpBE_RPM_init=0;
+double mcpBE_PosAtuador_init=0;
+double mcpBE_setpoint_init=0;
+double PID_P_init=0.009;
+double PID_I_init=0.26;
+double PID_D_init=0;
 
-mcp MCP_BE(statusMCPBE, mcpBE_RPM, mcpBE_PosAtuador, mcpBE_setpoint,0.009, 0.26, 0);
+mcp MCP_BE (statusMCPBE_init, mcpBE_RPM_init, mcpBE_PosAtuador_init, mcpBE_setpoint_init,PID_P_init, PID_I_init, PID_D_init);
 
 //Variaveis de interface com a SIMULACAO
 //ENTRADAS
@@ -69,8 +72,6 @@ const int COUNT = 5;                 // Count of Coils
 IPAddress remote(192, 168, 0, 5);    // Address of Modbus servidor Simulacao
 
 ModbusIP mb,mbIHM;  // ModbusIP object
-
-long ts; //não é usado mais. Retirar
 
 uint16_t writeROTACAO_MCP(TRegister* reg, uint16_t val) {
     MCP_BE.demandaRotacao(val);
@@ -133,9 +134,7 @@ bool cb(Modbus::ResultCode event, uint16_t transactionId, void* data) { // Modbu
 
 void setup() {
   Serial.begin(115200);
- 
   WiFi.begin("pontes","12345678");
-  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");

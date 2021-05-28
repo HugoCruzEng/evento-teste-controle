@@ -1,5 +1,3 @@
-
-
 #include <mcp.h>
 #include <PID_v1.h>
 //teste
@@ -16,7 +14,7 @@ mcp::mcp(bool mcp_Status, double mcp_RPM, double mcp_PosAtuador, double STpoint,
 
     //Specify the links and initial tuning parameters
     //double Kp=0.009, Ki=0.26, Kd=0; //valores iniciais de controle
-    myPID = new PID(&myRealimentacao, &myPosAtuador, &mySetpoint,Kp,Ki,Kd, DIRECT);
+    myPID = new PID(&myRealimentacao, &myPosAtuador, &mySetpoint,Kp,Ki,Kd,DIRECT);
 
     //turn the PID on
     myPID->SetMode(AUTOMATIC);
@@ -26,7 +24,7 @@ bool mcp::getStatusMCP(){
     return myStatusMCP; 
 }
 
-unsigned int mcp::getRotacaoMCP(){
+unsigned short int mcp::getRotacaoMCP(){
     return myRotacao;
 }
 
@@ -38,7 +36,7 @@ void mcp::pararMCP(){
     myStatusMCP=0;
     }
 
-void mcp::demandaRotacao(double demandRotacao){
+void mcp::demandaRotacao(unsigned short int demandRotacao){
     switch(myStatusMCP){
         case 0:
             mySetpoint=0;
@@ -49,51 +47,46 @@ void mcp::demandaRotacao(double demandRotacao){
         }
 }
 
-double mcp::getPosAtuador(){
+unsigned short int mcp::getPosAtuador(){
     return myPosAtuador;
 }
 
-double mcp::getSetPoint(){
+unsigned short int mcp::getSetPoint(){
     return mySetpoint;
 }
 
-double mcp::getRealimentacao(){
+unsigned short int mcp::getRealimentacao(){
     return myRealimentacao;
 }
 
-void mcp::setSetPoint(double setpoints){
+void mcp::setSetPoint(unsigned short int setpoints){
     mySetpoint=setpoints;
 }
 
-void mcp::setRealimentacao(double realimentacao){
+void mcp::setRealimentacao(unsigned short int realimentacao){
     myRealimentacao=realimentacao;
 }
 
-void mcp::setKp(double Kp){
+void mcp::setKp(unsigned short int Kp){
     myKp=Kp;
     myPID->SetTunings(myKp,myKi,myKd);
 }
 
-void mcp::setKi(double Ki){
+void mcp::setKi(unsigned short int Ki){
     myKi=Ki;
     myPID->SetTunings(myKp,myKi,myKd);
 }
 
-void mcp::setKd(double Kd){
+void mcp::setKd(unsigned short int Kd){
     myKd=Kd;
     myPID->SetTunings(myKp,myKi,myKd);
 }
 
-double mcp::processaPID(double inputs, double setPoint){
+double mcp::processaPID(unsigned short int inputs, unsigned short int setPoint){
   //if( (REG_OUT_SIMU[0] != Input) || ( REG_IN_SIMU[SC_AN_MCP_ROTACAO] =! Setpoint)){
-setRealimentacao(inputs);
-
-  if(myStatusMCP){
+    setRealimentacao(inputs);
     setSetPoint(setPoint);
-  }
-  else {
-    setSetPoint(0); 
-  }
+
     myPID->Compute();
-    return getPosAtuador();
+    return myPosAtuador;
 }

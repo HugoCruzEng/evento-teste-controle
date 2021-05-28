@@ -14,28 +14,28 @@ class mcp {
 
         void partirMCP();
         void pararMCP();
-        void demandaRotacao(double);
-        void setSetPoint(double);
-        void setRealimentacao(double);
-        void setKp(double);
-        void setKi(double);
-        void setKd(double);
+        void demandaRotacao(unsigned short int);
+        void setSetPoint(unsigned short int);
+        void setRealimentacao(unsigned short int);
+        void setKp(unsigned short int);
+        void setKi(unsigned short int);
+        void setKd(unsigned short int);
         bool getStatusMCP();
-        unsigned int getRotacaoMCP();
-        double getPosAtuador();
-        double getSetPoint();
-        double getRealimentacao();
+        unsigned short int getRotacaoMCP();
+        unsigned short int getPosAtuador();
+        unsigned short int getSetPoint();
+        unsigned short int getRealimentacao();
         
-        double processaPID(double, double);
+        double processaPID(unsigned short int, unsigned short int);
 
     private:
-        bool myStatusMCP=0;
-        double myRotacao=0;
+        bool myStatusMCP;
+        unsigned short myRotacao;
         // Variáveis PID
-        double mySetpoint, myRealimentacao, myPosAtuador, myKp, myKi, myKd;        
+        double mySetpoint, myRealimentacao, myPosAtuador;
+        double myKp, myKi, myKd;        
         PID *myPID;
-        // PID myPID;
+        //PID myPID;
 
 };
-
 #endif
