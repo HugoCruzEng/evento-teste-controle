@@ -1,4 +1,4 @@
-#include <mcp.h>
+#include <Mcp.h>
 #include <PID_v1.h>
 //teste
 
@@ -18,6 +18,12 @@ mcp::mcp(bool mcp_Status, double mcp_RPM, double mcp_PosAtuador, double STpoint,
 
     //turn the PID on
     myPID->SetMode(AUTOMATIC);
+
+    //itf.start_signal_interfaces();
+    //Interface interface1;
+    Signal sg1(100, "Sinal1");
+    Signal sg2(101, "Sinal2");
+    Signal sg3(102, "Sinal3");
 }
 
 bool mcp::getStatusMCP(){

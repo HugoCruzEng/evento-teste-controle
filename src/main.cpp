@@ -13,6 +13,9 @@
 #endif
 #include <ModbusIP_ESP8266.h>
 
+#include "../lib/Interface/Interface.h"
+#include "../lib/Signal/signal.h"
+
 #include <mcp.h>
 
 bool statusMCPBE_init=0;
@@ -69,9 +72,12 @@ int TOTAL_COIL_IHM=NUM_IN_COIL+NUM_OUT_COIL;
 
 const int REG = 0;                   // Modbus Coils Offse
 const int COUNT = 5;                 // Count of Coils
-IPAddress remote(192, 168, 0, 5);    // Address of Modbus servidor Simulacao
+IPAddress remote(192, 168, 0, 3);    // Address of Modbus servidor Simulacao
 
 ModbusIP mb,mbIHM;  // ModbusIP object
+
+//Interface interface;
+//extern Interface itf;
 
 uint16_t writeROTACAO_MCP(TRegister* reg, uint16_t val) {
     MCP_BE.demandaRotacao(val);
@@ -133,7 +139,27 @@ bool cb(Modbus::ResultCode event, uint16_t transactionId, void* data) { // Modbu
 }
 
 void setup() {
+  int index;
+
   Serial.begin(115200);
+  //-----nosso codigo: inicio-----
+  
+  
+ // interface.start_signal_interfaces();
+  //Serial.println(sg1.get_description());
+  
+  
+  
+  //  https://stackoverflow.com/questions/33172176/how-to-obtain-a-global-class-object-in-c-via-extern
+  
+  //index = itf.get_hmi_signal_index( &sg3 );
+
+  Serial.println(itf.get_hmi_id_signal(1));
+  Serial.println(itf.get_hmi_description_signal(1));
+
+  //MyNamespace::MyClass* pClass = new MyNamespace::MyClass();
+  //-----nosso codigo: fim-----
+  
   WiFi.begin("pontes","12345678");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -187,11 +213,11 @@ void loop() {
     //Função PID 0
     REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]=MCP_BE.processaPID(REG_IN_SIMU [SC_AN_MCP_ROTACAO],REG_IN_IHM[IC_AN_MCP_ROTACAO]);
 
-    Serial.print(REG_IN_SIMU[SC_AN_MCP_ROTACAO]);
+    /*Serial.print(REG_IN_SIMU[SC_AN_MCP_ROTACAO]);
     Serial.print(" ");
     Serial.print(REG_IN_IHM[IC_AN_MCP_ROTACAO]);
     Serial.print(" ");
-    Serial.println(REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]);
+    Serial.println(REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]);*/
 
     //STATUS FUNCIONANDO PARA A IHM
     if(REG_IN_SIMU[SC_AN_MCP_ROTACAO]>500){

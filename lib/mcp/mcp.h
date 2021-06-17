@@ -2,6 +2,7 @@
 #define mcp_h
 
 #include <PID_v1.h>
+#include "../signal/signal.h"
 
 class mcp {
     public:
