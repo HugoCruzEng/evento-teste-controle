@@ -11,13 +11,22 @@
 #else
  #include <WiFi.h>
 #endif
-#include <ModbusIP_ESP8266.h>
 
+#define MAIN_REFATORADA
+
+#ifdef MAIN_REFATORADA
 #include "../lib/Interface/Interface.h"
-#include "../lib/Signal/signal.h"
+void setup() {
+}
 
-#include <mcp.h>
+void loop() {
 
+}
+#else
+#include <ModbusIP_ESP8266.h>
+#include <../lib/mcp/mcp.h>
+
+// --- Refatorado ---
 bool statusMCPBE_init=0;
 double mcpBE_RPM_init=0;
 double mcpBE_PosAtuador_init=0;
@@ -28,17 +37,20 @@ double PID_D_init=0;
 
 mcp MCP_BE (statusMCPBE_init, mcpBE_RPM_init, mcpBE_PosAtuador_init, mcpBE_setpoint_init,PID_P_init, PID_I_init, PID_D_init);
 
+
 //Variaveis de interface com a SIMULACAO
 //ENTRADAS
 #define SC_AN_MCP_ROTACAO 0
 const int OFFSET_REG_IN_SIMU=0; 
 const int NUM_IN_SIMU=1; //quatidade de defines de entrada SIMULACAO
 uint16 REG_IN_SIMU[NUM_IN_SIMU]={0};
+
 //SAIDAS
 #define CS_AN_MCP_POSATUADOR 0
 const int OFFSET_REG_OUT_SIMU=NUM_IN_SIMU; //OFFSET SAIDA=QUANTIDADE DE ENTRADAS 
 const int NUM_OUT_SIMU=1; //qtde de defines de saida SIMULACAO
 uint16 REG_OUT_SIMU[NUM_OUT_SIMU]={0}; 
+
 
 //Variaveis de interface com a IHM
 //ENTRADAS REG
@@ -49,11 +61,13 @@ uint16 REG_OUT_SIMU[NUM_OUT_SIMU]={0};
 const int OFFSET_REG_IN_IHM=0; 
 const int NUM_IN_IHM=4;       //quatidade de defines de entrada SIMULACAO
 unsigned int REG_IN_IHM [NUM_IN_IHM]={0};
+
 //SAIDAS REG
 #define CI_AN_MCP_ROTACAO 0
 const int OFFSET_REG_OUT_IHM=NUM_IN_IHM; //OFFSET SAIDA=QUANTIDADE DE ENTRADAS 
 const int NUM_OUT_IHM=1;              //qtde de defines de saida SIMULACAO
 unsigned int REG_OUT_IHM[NUM_OUT_IHM]={0}; 
+
 
 //ENTRADA COIL
 #define IC_DG_MCP_PARTIR 0
@@ -72,6 +86,8 @@ int TOTAL_COIL_IHM=NUM_IN_COIL+NUM_OUT_COIL;
 
 const int REG = 0;                   // Modbus Coils Offse
 const int COUNT = 5;                 // Count of Coils
+//--- Refatorado --- //
+
 IPAddress remote(192, 168, 0, 3);    // Address of Modbus servidor Simulacao
 
 ModbusIP mb,mbIHM;  // ModbusIP object
@@ -198,6 +214,7 @@ uint16 resInputSimu1=0;
 uint16 resInputSimu2=0;
 uint16 resInputSimu[1]={0};
 
+
 uint8_t show = 100;
 
 void loop() {
@@ -237,3 +254,5 @@ void loop() {
     //ESCRITA SAIDAS DA SIMULACAO
     mb.writeHreg(remote,OFFSET_REG_OUT_SIMU+CS_AN_MCP_POSATUADOR,&REG_OUT_SIMU[0],1,cb,1);
 }
+
+#endif

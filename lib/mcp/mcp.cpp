@@ -40,7 +40,7 @@ void mcp:: partirMCP(){
 
 void mcp::pararMCP(){
     myStatusMCP=0;
-    }
+}
 
 void mcp::demandaRotacao(unsigned short int demandRotacao){
     switch(myStatusMCP){
@@ -90,7 +90,7 @@ void mcp::setKd(unsigned short int Kd){
 
 double mcp::processaPID(unsigned short int inputs, unsigned short int setPoint){
   //if( (REG_OUT_SIMU[0] != Input) || ( REG_IN_SIMU[SC_AN_MCP_ROTACAO] =! Setpoint)){
-    setRealimentacao(inputs);
+    mySetpoint=inputs; //setRealimentacao(inputs);
     setSetPoint(setPoint);
 
     myPID->Compute();

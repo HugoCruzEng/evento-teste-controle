@@ -1,7 +1,7 @@
 #include "../interface/interface.h"
 
 #ifndef signal_h
-#define signal_h
+#define signal_h 
 
 // This class implements all kind of signal types necessary for the equipment/device controllers and HMI 
 class Signal {
@@ -18,55 +18,56 @@ public:
     char* get_description();
 };
 
-class Digital_input : public Signal {
+class Digital_signal : public Signal {
+
+private:
+    bool value;
+
+public:
+    bool get_value();
+    void set_value(bool value);
+};
+
+class Digital_input : public Digital_signal {
 
 private:   
-    bool value;
     int time_millis;
     bool treat_signal();
 
 public:
     Digital_input(int id, char* description, int time_millis = 2000);
-    bool get_value();
-    void set_value(bool value);
 };
 
-
-class Digital_output : public Signal {
-
-private:
-    bool value;
+class Digital_output : public Digital_signal {
     
 public:
     Digital_output(int id, char* description);
-    bool get_value();
-    void set_value(bool value);
 };
 
+class Analog_signal : public Signal{
 
-class Analog_input : public Signal {
-    
-private:
+public:
     double value;
+    
+public:
+    double get_value();
+    void set_value(double value);
+};
+
+class Analog_input : public Analog_signal {
+    
+public:
     double* previous_inputs;
     double treat_signal();
     
 public:
     Analog_input(int id, char* description);
-    double get_value();
-    void set_value(double value);
 };
 
-class Analog_output : public Signal {
-    
-private:
-    double value;
+class Analog_output : public Analog_signal {
     
 public:
     Analog_output(int id, char* description);
-    //double treat_signal();
-    double get_value();
-    void set_value(double value);
 };
 
 template<class T>
@@ -77,7 +78,9 @@ private:
     T treat_signal();
 
 public:
+    Hmi_signal(int id, char* description);
     T get_value();
     void set_value(T value);
 };
+
 #endif

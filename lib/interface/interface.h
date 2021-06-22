@@ -4,6 +4,7 @@
 // This class implements all kind of interfaces necessary for communication between equipment/device controllers and HMI/plant
 #include "../signal/signal.h"
 #include "../configuration/config.h"
+
 //#include <ModbusIP_ESP8266.h>
 
 class Interface {

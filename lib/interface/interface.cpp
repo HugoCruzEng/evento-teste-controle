@@ -25,6 +25,8 @@ void Interface::start_signal_interfaces(){
 
 void Interface::add_hmi_signal(Signal* sl){
     if(hmi_signals_index < HMI_NUMBERS_MAX_SIGNALS){
+        //mb_hmi.addHreg(sl->get_id(), slget_value()->); // paramos aqui!
+       
         hmi_signals[hmi_signals_index] = sl;
         hmi_signals_index++;
     }
