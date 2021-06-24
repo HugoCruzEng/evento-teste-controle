@@ -15,12 +15,45 @@
 #define MAIN_REFATORADA
 
 #ifdef MAIN_REFATORADA
+#include "../subsystems/propulsion.h"
 #include "../lib/Interface/Interface.h"
+//#include "../lib/signal/signal.h"
+
+Propulsion propulsion;
+Interface interface;
+
+char* buffer_temp[100];
+uint16 teste;
+
 void setup() {
+  
+  Serial.begin(115200);
+
+  WiFi.begin("pontes","12345678");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+ 
+  Serial.println("");
+  Serial.println("WiFi connected");  
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  interface.start_signal_interfaces();
+
 }
 
 void loop() {
+  interface.receive_data(&teste);
 
+  //propulsion.control_propulsion();
+
+  //Serial.println(teste);
+  //signals_list.get_model_analog_signal_by_id(3)->set_value(teste);
+  Serial.println( signals_list.get_model_analog_signal_by_id(3)->get_value() );
+
+  //interface.send_data();
 }
 #else
 #include <ModbusIP_ESP8266.h>
@@ -113,7 +146,7 @@ uint16_t partirMCP(TRegister* reg, uint16_t val) {
       //REG_OUT_SIMU[CS_AN_MCP_POSATUADOR] = (uint16) Output;
       REG_OUT_SIMU[CS_AN_MCP_POSATUADOR]=MCP_BE.getPosAtuador();
 
-      //Serial.println(MCP_BE.getSetPoint());
+      Serial.println(MCP_BE.getSetPoint());
       //Serial.println(MCP_BE.getRealimentacao());
       //Serial.println(MCP_BE.getRotacaoMCP());
      }
@@ -170,8 +203,8 @@ void setup() {
   
   //index = itf.get_hmi_signal_index( &sg3 );
 
-  Serial.println(itf.get_hmi_id_signal(1));
-  Serial.println(itf.get_hmi_description_signal(1));
+  //Serial.println(itf.get_hmi_id_signal(1));
+  //Serial.println(itf.get_hmi_description_signal(1));
 
   //MyNamespace::MyClass* pClass = new MyNamespace::MyClass();
   //-----nosso codigo: fim-----

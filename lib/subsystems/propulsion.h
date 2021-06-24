@@ -1,4 +1,6 @@
+
 #include "../equipments/mcp.h"
+#include "../signal/signals_list.h"
 
 class Propulsion
 {
@@ -11,5 +13,5 @@ public:
     Propulsion();
     ~Propulsion();
 
-    void control_propulsion();
+    char* control_propulsion();
 };

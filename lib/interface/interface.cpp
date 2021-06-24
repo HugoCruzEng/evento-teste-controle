@@ -1,6 +1,26 @@
 #include "../Interface/Interface.h"
 
-Interface itf;
+ModbusIP mb_model;
+uint16 mb_read_buffer[10];
+
+IPAddress model_address(
+    (uint8_t) MODEL_IP_ADDRESS_0, 
+    (uint8_t) MODEL_IP_ADDRESS_1, 
+    (uint8_t) MODEL_IP_ADDRESS_2, 
+    (uint8_t) MODEL_IP_ADDRESS_3
+);
+
+bool treat_registers_after_read_mb(Modbus::ResultCode event, uint16_t transactionId, void* data) { // Modbus Transaction callback
+    if (event != Modbus::EX_SUCCESS){
+        //TODO
+        //signals_list.get_model_analog_signal_by_id(3)->set_value(mb_read_buffer[0]);
+    }                  // If transaction got an error
+    if (event == Modbus::EX_TIMEOUT) {    // If Transaction timeout took place
+        mb_model.disconnect(model_address); // Close connection to slave and
+        mb_model.dropTransactions();        // Cancel all waiting transactions
+    }
+  return true;
+}
 
 Interface::Interface(){
 
@@ -9,7 +29,18 @@ Interface::Interface(){
 void Interface::start_signal_interfaces(){
     
     //mb_hmi.server();
-    //mb_model.client();
+    mb_model.client();
+
+    /*Iterator<Analog_signal*>* it = signals_list.get_analog_signals_iterator();
+    //int i = 0;
+    while(it->has_next()){
+        //paramos aqui!!!!!!!!!!!!
+        Analog_signal* signal = it->next();
+        mb_hmi.addHreg(signal->get_id(), signal->get_value(),1);
+        //a[i] = signal->get_description();
+        //i++;
+    }
+    delete(it);*/
 
     /*mbIHM.addHreg(OFFSET_REG_IN_IHM+IC_AN_MCP_ROTACAO,REG_IN_IHM[IC_AN_MCP_ROTACAO],1);
     mbIHM.addHreg(OFFSET_REG_IN_IHM+IC_AN_MCP_PIDP,REG_IN_IHM[IC_AN_MCP_PIDP],1);
@@ -23,77 +54,28 @@ void Interface::start_signal_interfaces(){
     */
 }
 
-void Interface::add_hmi_signal(Signal* sl){
-    if(hmi_signals_index < HMI_NUMBERS_MAX_SIGNALS){
-        //mb_hmi.addHreg(sl->get_id(), slget_value()->); // paramos aqui!
-       
-        hmi_signals[hmi_signals_index] = sl;
-        hmi_signals_index++;
+void Interface::receive_data(uint16* teste){
+    
+    if (!mb_model.isConnected(model_address)) {   // Check if connection to Modbus Slave is established
+        mb_model.connect(model_address);           // Try to connect if no connection
+        //Serial.print(".");
     }
+    // 
+    //mb_model.readHreg(model_address, 0, REG_IN_SIMU, 1, cb, 1);
+
+
+    mb_model.readHreg(model_address, 0, mb_read_buffer, 1, treat_registers_after_read_mb, 1);
+    //mb_model.readHreg(model_address, 0, teste, 1, treat_registers_after_read_mb, 1);
+    signals_list.get_model_analog_signal_by_id(3)->set_value(mb_read_buffer[0]);
+
+    /*Iterator<Analog_signal> it = signals_list.get_analog_signals_iterator();
+    while(it.has_next()){
+        mb_model.readHreg(model_address, 0, REG_IN_SIMU, 1, cb, 1);
+    }*/
+    
+    mb_model.task(); // Modbus task
 }
 
-
-void Interface::add_model_digital_signal(Signal* sl){
-    if(model_digital_signals_index < MODEL_DIGITAL_NUMBERS_MAX_SIGNALS){
-        model_digital_signals[model_digital_signals_index] = sl;
-        model_digital_signals_index++;
-    }
-}
-
-void Interface::add_model_analog_signal(Signal* sl){
-    if(model_analog_signals_index < MODEL_ANALOG_NUMBERS_MAX_SIGNALS){
-        model_analog_signals[model_analog_signals_index] = sl;
-        model_analog_signals_index++;
-    }
-}
-
-int Interface::get_hmi_signal_index(Signal* sl){
-    for(int i = 0; i < hmi_signals_index; i++){
-        if(hmi_signals[i]->get_id() == sl->get_id()){
-            return i;
-        }
-    }
-    return ERROR_REQUEST;
-}
-
-char* Interface::get_hmi_description_signal(int index){
-    return hmi_signals[index]->get_description();
-}
-
-int Interface::get_hmi_id_signal(int index){
-    return hmi_signals[index]->get_id();
-}
-
-int Interface::get_model_digital_signal_index(Signal* sl){
-    for(int i = 0; i < model_digital_signals_index; i++){
-        if(model_digital_signals[i]->get_id() == sl->get_id()){
-            return i;
-        }
-    }
-    return ERROR_REQUEST;
-}
-
-char* Interface::get_model_digital_description_signal(int index){
-    return model_digital_signals[index]->get_description();
-}
-
-int Interface::get_model_digital_id_signal(int index){
-    return model_digital_signals[index]->get_id();
-}
-
-int Interface::get_model_analog_signal_index(Signal* sl){
-    for(int i = 0; i < model_analog_signals_index; i++){
-        if(model_analog_signals[i]->get_id() == sl->get_id()){
-            return i;
-        }
-    }
-    return ERROR_REQUEST;
-}
-
-char* Interface::get_model_analog_description_signal(int index){
-    return model_analog_signals[index]->get_description();
-}
-
-int Interface::get_model_analog_id_signal(int index){
-    return model_analog_signals[index]->get_id();
+void Interface::send_data(){
+    //mb_model.writeHreg(model_address, OFFSET_REG_OUT_SIMU + CS_AN_MCP_POSATUADOR, &REG_OUT_SIMU[0], 1, cb,1);
 }

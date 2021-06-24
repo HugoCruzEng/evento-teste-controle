@@ -14,10 +14,10 @@ public:
     Analog_input* set_point;
     Analog_output* actuator_position;
 
-    Hmi_signal<double>* demand;
+    /*Hmi_signal<double>* demand;
     Hmi_signal<double>* kp;
     Hmi_signal<double>* ki;
-    Hmi_signal<double>* kd;
+    Hmi_signal<double>* kd;*/
 };
 
 class Mcp_ctrl {
@@ -39,6 +39,8 @@ public:
     //void demand_rotation();
     //void set_setpoint();
     void process_pid();
+
+    Mcp_ctrl_signals* get_mcp_signals();   
 };
 
 #endif

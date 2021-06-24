@@ -1,5 +1,3 @@
-#include "../interface/interface.h"
-
 #ifndef signal_h
 #define signal_h 
 

@@ -1,4 +1,4 @@
-#include "../Signal/Signal.h"
+#include "../signal/signal.h"
 
 Signal::Signal(){
 }
@@ -32,7 +32,7 @@ Digital_input::Digital_input(int id, char* description, int time_millis) {
     this->id = id;
     this->description = description;
 
-    itf.add_model_digital_signal(this);
+    //itf.add_model_digital_signal(this);//itf->add_model_digital_signal(this);
 }
 /*
 bool Digital_input::get_value(){
@@ -51,7 +51,7 @@ Digital_output::Digital_output(int id, char* description) {
     this->id = id;
     this->description = description;
 
-    itf.add_model_digital_signal(this);
+    //itf.add_model_digital_signal(this);//itf->add_model_digital_signal(this);
 }
 /*
 bool Digital_output::get_value(){
@@ -80,7 +80,7 @@ Analog_input::Analog_input(int id, char* description) {
     this->id = id;
     this->description = description;
 
-    itf.add_model_analog_signal(this);
+    //itf.get_model_analog_id_signal(this);//itf->add_model_analog_signal(this);
 }
 /*
 double Analog_input::get_value(){
@@ -98,7 +98,7 @@ Analog_output::Analog_output(int id, char* description) {
     this->id = id;
     this->description = description;
 
-    itf.add_model_analog_signal(this);
+    //itf.add_model_analog_signal(this);//itf->add_model_analog_signal(this);
 }
 /*
 double Analog_output::get_value(){

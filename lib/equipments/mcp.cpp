@@ -6,9 +6,9 @@ Mcp_ctrl::Mcp_ctrl(Mcp_ctrl_signals* mcp_signals) : mcp_signals(mcp_signals)
         &my_rotation, 
         &my_actuator_position, 
         &my_setpoint,
-        mcp_signals->kp->get_value(),
-        mcp_signals->ki->get_value(),
-        mcp_signals->kd->get_value(), 
+        0.1, //mcp_signals->kp->get_value(),
+        0.1, //mcp_signals->ki->get_value(),
+        0, //mcp_signals->kd->get_value(), 
         DIRECT
     );
 }
@@ -35,3 +35,7 @@ void Mcp_ctrl::stop(){
     mcp_signals->start_command->set_value(false);
     mcp_signals->stop_command->set_value(true);   
 } 
+
+Mcp_ctrl_signals* Mcp_ctrl::get_mcp_signals(){
+    return mcp_signals;
+}
