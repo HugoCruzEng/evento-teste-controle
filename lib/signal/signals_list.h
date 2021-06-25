@@ -4,6 +4,7 @@
 // This class implements all kind of interfaces necessary for communication between equipment/device controllers and HMI/plant
 #include "signal.h"
 #include "../configuration/config.h"
+#include <vector>
 
 template<class T>
 class Iterator {
@@ -51,6 +52,9 @@ class Signals_list {
         
         Analog_signal* get_model_analog_signal_by_id(int id);
         //Digital_signal* get_digital
+        
+        int get_model_digital_signals_index();
+        int get_model_analog_signals_index();
         /*
         int get_hmi_signal_index(Signal* sl);
         char* get_hmi_description_signal(int index);
@@ -66,6 +70,9 @@ class Signals_list {
         */
 };
 
-extern Signals_list signals_list;
+//extern Signals_list signals_list;
+
+extern std::vector<Digital_input*> digital_input_list;
+extern std::vector<Analog_input*> analog_input_list;
 
 #endif

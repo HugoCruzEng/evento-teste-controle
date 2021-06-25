@@ -17,6 +17,7 @@
 #ifdef MAIN_REFATORADA
 #include "../subsystems/propulsion.h"
 #include "../lib/Interface/Interface.h"
+//#include "../lib/configuration/config.h"
 //#include "../lib/signal/signal.h"
 
 Propulsion propulsion;
@@ -29,7 +30,7 @@ void setup() {
   
   Serial.begin(115200);
 
-  WiFi.begin("pontes","12345678");
+  WiFi.begin("Tim Live Victor","pontes309vpm");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -41,17 +42,56 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   interface.start_signal_interfaces();
-
 }
 
 void loop() {
-  interface.receive_data(&teste);
+  
+  static int timer_print = 10000;
+
+  interface.receive_data();
 
   //propulsion.control_propulsion();
 
   //Serial.println(teste);
   //signals_list.get_model_analog_signal_by_id(3)->set_value(teste);
-  Serial.println( signals_list.get_model_analog_signal_by_id(3)->get_value() );
+  /*unsigned int i = signals_list.get_model_analog_signals_index() - 1;
+  for(unsigned int j = 0; j < i; j++)
+    Serial.println( signals_list.get_model_analog_signal_by_id(3+j)->get_value() );*/
+  
+  if( timer_print >= 10000){
+    /*Iterator<Analog_signal*>* it = signals_list.get_analog_signals_iterator();
+    while(it->has_next()){
+      Serial.println(it->next()->get_id());
+    }
+    delete(it);*/
+    //Serial.print("Analog-> ");
+    //Serial.println( signals_list.get_model_analog_signal_by_id(3)->get_value() );
+    
+    Serial.println("Analog-> ");
+    for(Analog_input* ai : analog_input_list){
+      Serial.print(ai->get_id());
+      Serial.print(" - ");
+      Serial.println(ai->get_value());
+    }
+
+    Serial.println("Digital-> ");
+    for(Digital_input* di : digital_input_list){
+      Serial.print(di->get_id());
+      Serial.print(" - ");
+      Serial.println(di->get_value());
+    }
+      
+    timer_print=0;
+  }
+  else{
+    timer_print++;
+  }
+
+  /*Serial.println( signals_list.get_model_analog_signal_by_id(3)->get_description() );
+  Serial.println( signals_list.get_model_analog_signal_by_id(4)->get_description() );
+  Serial.println( signals_list.get_model_analog_signal_by_id(5)->get_description() );*/
+  //Serial.println( signals_list.get_model_analog_signals_index() );
+
 
   //interface.send_data();
 }

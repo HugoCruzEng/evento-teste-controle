@@ -1,6 +1,7 @@
-
 #include "../equipments/mcp.h"
 #include "../signal/signals_list.h"
+
+#include <vector>
 
 class Propulsion
 {

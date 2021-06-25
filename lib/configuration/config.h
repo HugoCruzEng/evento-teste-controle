@@ -7,15 +7,32 @@
 #define MODEL_DIGITAL_NUMBERS_MAX_SIGNALS    20
 #define MODEL_ANALOG_NUMBERS_MAX_SIGNALS     20
 
-//Signals interface Propulsion Subsystem
-//DIGITAL
-#define MODEL_DO_START_COMMAND      0
-#define MODEL_DO_STOP_COMMAND       1
 
+//Signals interface Propulsion Subsystem
+#define MODEL_OFFSET_DIGITAL_INPUT      0
+#define MODEL_OFFSET_ANALOG_INPUT       5   //100
+#define MODEL_OFFSET_DIGITAL_OUTPUT     200
+#define MODEL_OFFSET_ANALOG_OUTPUT      300
+
+//DIGITAL
+//INPUTS
+#define MODEL_DO_START_COMMAND          MODEL_OFFSET_DIGITAL_OUTPUT
+#define MODEL_DO_STOP_COMMAND           MODEL_OFFSET_DIGITAL_OUTPUT + 1
+//OUTPUTS
+#define MODEL_DI_STATUS                 MODEL_OFFSET_DIGITAL_INPUT
+
+//ANALOG
+//INPUTS
+#define MODEL_AI_ROTATION               MODEL_OFFSET_ANALOG_INPUT   
+#define MODEL_AI_SET_POINT              MODEL_OFFSET_ANALOG_INPUT + 1
+//OUTPUTS
+#define MODEL_AO_POSITION               MODEL_OFFSET_ANALOG_OUTPUT
+
+//CONFIGURATION IP MODEL
 #define MODEL_IP_ADDRESS_0      192
 #define MODEL_IP_ADDRESS_1      168
-#define MODEL_IP_ADDRESS_2      0
-#define MODEL_IP_ADDRESS_3      2
+#define MODEL_IP_ADDRESS_2      1
+#define MODEL_IP_ADDRESS_3      6
 
 /*const int OFFSET_REG_IN_SIMU=0; 
 const int NUM_IN_SIMU=1; //quatidade de defines de entrada SIMULACAO

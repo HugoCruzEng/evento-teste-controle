@@ -7,22 +7,25 @@ Propulsion::Propulsion(/* args */)
     Mcp_ctrl_signals* mcp_be_signals = new Mcp_ctrl_signals();
     
     mcp_be_signals->start_command = new Digital_output(MODEL_DO_START_COMMAND, "P01D001");       //#define IC_DG_MCP_PARTIR 0
-    signals_list.add(mcp_be_signals->start_command);
+    //signals_list.add(mcp_be_signals->start_command);
     
     mcp_be_signals->stop_command = new Digital_output(MODEL_DO_STOP_COMMAND, "P01D002");        //#define IC_DG_MCP_PARAR 1
-    signals_list.add(mcp_be_signals->stop_command);
+    //signals_list.add(mcp_be_signals->stop_command);
     
-    mcp_be_signals->status = new Digital_input(2, "P01D003");               //#define CI_DG_MCP_FUNCIONANDO 2
-    signals_list.add(mcp_be_signals->status);
+    mcp_be_signals->status = new Digital_input(MODEL_DI_STATUS, "P01D003");               //#define CI_DG_MCP_FUNCIONANDO 2
+    //signals_list.add(mcp_be_signals->status);
+    digital_input_list.push_back(mcp_be_signals->status);
     
-    mcp_be_signals->rotation = new Analog_input(3, "P01A001");              //#define SC_AN_MCP_ROTACAO 0 
-    signals_list.add(mcp_be_signals->rotation);
+    mcp_be_signals->rotation = new Analog_input(MODEL_AI_ROTATION, "P01A001");              //#define SC_AN_MCP_ROTACAO 0 
+    analog_input_list.push_back(mcp_be_signals->rotation);
+    //signals_list.add(mcp_be_signals->rotation);
 
-    mcp_be_signals->set_point = new Analog_input(4, "P01A002");
-    signals_list.add(mcp_be_signals->set_point);
+    mcp_be_signals->set_point = new Analog_input(MODEL_AI_SET_POINT, "P01A002");
+    //signals_list.add(mcp_be_signals->set_point);
+    analog_input_list.push_back(mcp_be_signals->set_point);
 
-    mcp_be_signals->actuator_position = new Analog_output(5, "P01A003");    //#define CS_AN_MCP_POSATUADOR 1
-    signals_list.add(mcp_be_signals->actuator_position);
+    mcp_be_signals->actuator_position = new Analog_output(MODEL_AO_POSITION, "P01A003");    //#define CS_AN_MCP_POSATUADOR 1
+    //signals_list.add(mcp_be_signals->actuator_position);
     
    /* mcp_be_signals->demand = signals_list.add(new Hmi_signal<double>(0, "P01H001"));          //#define IC_AN_MCP_ROTACAO 0
     mcp_be_signals->kp = signals_list.add(new Hmi_signal<double>(1, "P01H002"));              //#define IC_AN_MCP_PIDP 1

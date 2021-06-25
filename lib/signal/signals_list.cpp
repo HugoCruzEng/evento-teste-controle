@@ -2,6 +2,9 @@
 
 Signals_list signals_list;
 
+std::vector<Digital_input*> digital_input_list;
+std::vector<Analog_input*> analog_input_list;
+
 Signals_list::Signals_list(){
     model_digital_signals_index = 0;
     model_analog_signals_index = 0;
@@ -67,8 +70,8 @@ Analog_signal* Signals_list::get_model_analog_signal_by_id(int id){
         if(model_analog_signals[i]->get_id() == id){
             return model_analog_signals[i];
         }
-        return nullptr; 
     }
+    return nullptr; 
 }
 
 Iterator<Digital_signal*>* Signals_list::get_digital_signals_iterator(){
@@ -77,6 +80,14 @@ Iterator<Digital_signal*>* Signals_list::get_digital_signals_iterator(){
 
 Iterator<Analog_signal*>* Signals_list::get_analog_signals_iterator(){
     return new Iterator<Analog_signal*>(model_analog_signals, model_analog_signals_index);
+}
+
+int Signals_list::get_model_digital_signals_index(){
+    return model_digital_signals_index;
+}
+
+int Signals_list::get_model_analog_signals_index(){
+    return model_analog_signals_index;
 }
 
 template<class T>
