@@ -14,17 +14,17 @@ class Interface {
     private:
         void model_receive_data();
         void model_send_data();
+        
+        void setup_hmi_data();
+        void hmi_receive_data();
+        void hmi_send_data();
 
     public:
         Interface();
         
         void start_signal_interfaces(); 
-              
         void receive_data();
         void send_data();
-
-        //bool treat_registers_after_read_mb(Modbus::ResultCode event, uint16_t transactionId, void* data); // Modbus Transaction callback
-
 };
 
 #endif

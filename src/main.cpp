@@ -23,14 +23,11 @@
 Propulsion propulsion;
 Interface interface;
 
-char* buffer_temp[100];
-uint16 teste;
-
 void setup() {
   
   Serial.begin(115200);
 
-  WiFi.begin("Tim Live Victor","pontes309vpm");
+  WiFi.begin("pontes","12345678");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -44,56 +41,54 @@ void setup() {
   interface.start_signal_interfaces();
 }
 
-void loop() {
-  
-  static int timer_print = 10000;
+void printSerialDebug(){
+  static int timer_print = 1000;
 
-  interface.receive_data();
-
-  //propulsion.control_propulsion();
-
-  //Serial.println(teste);
-  //signals_list.get_model_analog_signal_by_id(3)->set_value(teste);
-  /*unsigned int i = signals_list.get_model_analog_signals_index() - 1;
-  for(unsigned int j = 0; j < i; j++)
-    Serial.println( signals_list.get_model_analog_signal_by_id(3+j)->get_value() );*/
-  
   if( timer_print >= 10000){
-    /*Iterator<Analog_signal*>* it = signals_list.get_analog_signals_iterator();
-    while(it->has_next()){
-      Serial.println(it->next()->get_id());
-    }
-    delete(it);*/
-    //Serial.print("Analog-> ");
-    //Serial.println( signals_list.get_model_analog_signal_by_id(3)->get_value() );
-    
-    Serial.println("Analog-> ");
+    Serial.println("Analog input-> ");
     for(Analog_input* ai : analog_input_list){
       Serial.print(ai->get_id());
       Serial.print(" - ");
       Serial.println(ai->get_value());
     }
 
-    Serial.println("Digital-> ");
+    Serial.println("Analog output-> ");
+    for(Analog_output* anl : analog_output_list){
+      Serial.print(anl->get_id());
+      Serial.print(" - ");
+      Serial.println(anl->get_value());
+    }
+
+    Serial.println("Digital input-> ");
     for(Digital_input* di : digital_input_list){
       Serial.print(di->get_id());
       Serial.print(" - ");
-      Serial.println(di->get_value());
+      Serial.println(di->get_value() ? "true" : "false");
     }
-      
+
+    Serial.println("Digital output-> ");
+    for(Digital_output* dou : digital_output_list){
+      Serial.print(dou->get_id());
+      Serial.print(" - ");
+      Serial.println(dou->get_value() ? "true" : "false");
+    }
+
     timer_print=0;
   }
   else{
     timer_print++;
   }
+}
 
-  /*Serial.println( signals_list.get_model_analog_signal_by_id(3)->get_description() );
-  Serial.println( signals_list.get_model_analog_signal_by_id(4)->get_description() );
-  Serial.println( signals_list.get_model_analog_signal_by_id(5)->get_description() );*/
-  //Serial.println( signals_list.get_model_analog_signals_index() );
+void loop() {
+  
+  interface.receive_data();
 
+  propulsion.control_propulsion();
 
-  //interface.send_data();
+  interface.send_data();
+
+  printSerialDebug();
 }
 #else
 #include <ModbusIP_ESP8266.h>

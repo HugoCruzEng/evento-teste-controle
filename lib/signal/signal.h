@@ -7,7 +7,6 @@ class Signal {
 protected:
     int id;
     char* description;  // TODO: definir Tag para descrever o Sinal
-    //Signal(int id, char* description);
 
 public:
     Signal();
@@ -73,12 +72,16 @@ class Hmi_signal : public Signal {
     
 private:
     T value;
-    T treat_signal();
+    //T treat_signal();
 
 public:
     Hmi_signal(int id, char* description);
-    T get_value();
-    void set_value(T value);
+    T Hmi_signal<T>::get_value(){
+        return this->value;
+    }
+    void Hmi_signal<T>::set_value(T value){
+        this->value = value;
+    }
 };
 
 #endif

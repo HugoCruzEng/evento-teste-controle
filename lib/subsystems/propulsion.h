@@ -14,5 +14,5 @@ public:
     Propulsion();
     ~Propulsion();
 
-    char* control_propulsion();
+    void control_propulsion();
 };

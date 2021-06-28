@@ -5,19 +5,31 @@
 #include <PID_v1.h>
 
 class Mcp_ctrl_signals {
-public:    
+public:
+/*SIMULADOR SERVER - INTERFACE COM MODELO				
+Coils			        Holding registers	
+Address	Name		        Address	Name
+0	MCP_PARTIR		    0	MCP_ROTACAOATUAL
+1	MCP_PARAR		    1	MCP_POSATUADOR
+2	MCP_FUNCIONADO			
+*/ 
+    Digital_input* status;
     Digital_output* start_command;
     Digital_output* stop_command;
-    Digital_input* status;
-
-    Analog_input* rotation;
-    Analog_input* set_point;
+    
+    Analog_input* rotation;    
     Analog_output* actuator_position;
 
-    /*Hmi_signal<double>* demand;
-    Hmi_signal<double>* kp;
-    Hmi_signal<double>* ki;
-    Hmi_signal<double>* kd;*/
+    Hmi_signal<bool>* start_command_hmi;
+    Hmi_signal<bool>* stop_command_hmi;
+    Hmi_signal<bool>* status_hmi;
+    
+    Hmi_signal<int>* demand_hmi;
+    Hmi_signal<int>* rotation_hmi;
+    Hmi_signal<double>* actuator_position_hmi;
+    Hmi_signal<double>* kp_hmi;
+    Hmi_signal<double>* ki_hmi;
+    Hmi_signal<double>* kd_hmi;
 };
 
 class Mcp_ctrl {

@@ -19,7 +19,7 @@ Mcp_ctrl::~Mcp_ctrl()
 
 void Mcp_ctrl::process_pid(){
     my_rotation = mcp_signals->rotation->get_value();
-    my_setpoint = mcp_signals->set_point->get_value();
+    //my_setpoint = mcp_signals->set_point->get_value();
 
     pid->Compute();
 
