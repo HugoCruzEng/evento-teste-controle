@@ -1,6 +1,9 @@
 #ifndef signal_h
 #define signal_h 
 
+#include <vector>
+#include "../configuration/config.h"
+
 // This class implements all kind of signal types necessary for the equipment/device controllers and HMI 
 class Signal {
 
@@ -43,7 +46,7 @@ public:
 
 class Analog_signal : public Signal{
 
-public:
+private:
     double value;
     
 public:
@@ -53,7 +56,7 @@ public:
 
 class Analog_input : public Analog_signal {
     
-public:
+private:
     double* previous_inputs;
     double treat_signal();
     
@@ -75,13 +78,24 @@ private:
     //T treat_signal();
 
 public:
-    Hmi_signal(int id, char* description);
-    T Hmi_signal<T>::get_value(){
+    Hmi_signal<T>(int id, char* description);
+
+    T get_value(){
         return this->value;
     }
-    void Hmi_signal<T>::set_value(T value){
+    
+    void set_value(T value){
         this->value = value;
     }
 };
+
+extern std::vector<Digital_input*> digital_input_list;
+extern std::vector<Analog_input*> analog_input_list;
+extern std::vector<Digital_output*> digital_output_list;
+extern std::vector<Analog_output*> analog_output_list;
+
+extern std::vector<Hmi_signal<bool>*> hmi_bool_signal_list;
+extern std::vector<Hmi_signal<int>*> hmi_int_signal_list;
+extern std::vector<Hmi_signal<double>*> hmi_double_signal_list;
 
 #endif

@@ -1,5 +1,7 @@
 #include "../equipments/mcp.h"
-#include "../signal/signals_list.h"
+#include "../configuration/config.h"
+#include "../signal/signal.h"
+//#include "../signal/signals_list.h"
 
 #include <vector>
 

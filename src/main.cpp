@@ -16,7 +16,7 @@
 
 #ifdef MAIN_REFATORADA
 #include "../subsystems/propulsion.h"
-#include "../lib/Interface/Interface.h"
+#include "../lib/interface/interface.h"
 //#include "../lib/configuration/config.h"
 //#include "../lib/signal/signal.h"
 
@@ -27,7 +27,7 @@ void setup() {
   
   Serial.begin(115200);
 
-  WiFi.begin("pontes","12345678");
+  WiFi.begin("pontes","12345678"); //WiFi.begin("Tim Live Victor","pontes309vpm"); 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -72,6 +72,27 @@ void printSerialDebug(){
       Serial.print(" - ");
       Serial.println(dou->get_value() ? "true" : "false");
     }
+    
+    Serial.println("Hmi bool-> ");
+    for(Hmi_signal<bool>* hmi : hmi_bool_signal_list){
+      Serial.print(hmi->get_id());
+      Serial.print(" - ");
+      Serial.println(hmi->get_value() ? "true" : "false");
+    }
+
+    Serial.println("Hmi int-> ");
+    for(Hmi_signal<int>* hmi : hmi_int_signal_list){
+      Serial.print(hmi->get_id());
+      Serial.print(" - ");
+      Serial.println(hmi->get_value());
+    }
+
+    Serial.println("Hmi double-> ");
+    for(Hmi_signal<double>* hmi : hmi_double_signal_list){
+      Serial.print(hmi->get_id());
+      Serial.print(" - ");
+      Serial.printf("%.5f\n", hmi->get_value());
+    }
 
     timer_print=0;
   }
@@ -82,14 +103,17 @@ void printSerialDebug(){
 
 void loop() {
   
-  interface.receive_data();
+  interface.model_receive_data();
 
+  interface.update_interface_data();
+  
   propulsion.control_propulsion();
 
-  interface.send_data();
+  interface.model_send_data();
 
   printSerialDebug();
 }
+
 #else
 #include <ModbusIP_ESP8266.h>
 #include <../lib/mcp/mcp.h>
@@ -160,8 +184,8 @@ IPAddress remote(192, 168, 0, 3);    // Address of Modbus servidor Simulacao
 
 ModbusIP mb,mbIHM;  // ModbusIP object
 
-//Interface interface;
-//extern Interface itf;
+//Interface_modbus interface;
+//extern Interface_modbus itf;
 
 uint16_t writeROTACAO_MCP(TRegister* reg, uint16_t val) {
     MCP_BE.demandaRotacao(val);

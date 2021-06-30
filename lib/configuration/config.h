@@ -30,7 +30,7 @@ Address	Name		        Address	Name
 #define MODEL_IP_ADDRESS_0          192
 #define MODEL_IP_ADDRESS_1          168
 #define MODEL_IP_ADDRESS_2          0
-#define MODEL_IP_ADDRESS_3          2
+#define MODEL_IP_ADDRESS_3          3
 
 //Signals MODEL
 //Signals interface Propulsion Subsystem
@@ -53,20 +53,24 @@ Address	Name		        Address	Name
 #define MODEL_AO_POSITION               MODEL_OFFSET_ANALOG_OUTPUT
 
 //Signals HMI
+//OFFSET Registers
 #define HMI_OFFSET_BOOL     0
-#define START_COMMAND_HMI   0
-#define STOP_COMMAND_HMI    1
-#define STATUS_HMI          2
+#define HMI_OFFSET_INT      3 //100
+#define HMI_OFFSET_DOUBLE   5 //200
 
-#define HMI_OFFSET_INT     0
+//Bools
+#define START_COMMAND_HMI	HMI_OFFSET_BOOL
+#define STOP_COMMAND_HMI    HMI_OFFSET_BOOL + 1
+#define STATUS_HMI          HMI_OFFSET_BOOL + 2
 
-#define HMI_OFFSET_DOUBLE     100
-#define DEMAND_HMI            3
-#define ROTATION_HMI          4
-#define ACTUATOR_POSITION_HMI 5
-#define KP_HMI                6
-#define KI_HMI                7
-#define KD_HMI                8
+//Ints
+#define DEMAND_HMI            HMI_OFFSET_INT
+#define ROTATION_HMI          HMI_OFFSET_INT + 1
 
+//double
+#define KP_HMI                	HMI_OFFSET_DOUBLE
+#define KI_HMI                	HMI_OFFSET_DOUBLE + 2
+#define KD_HMI                	HMI_OFFSET_DOUBLE + 4
+#define ACTUATOR_POSITION_HMI 	HMI_OFFSET_DOUBLE + 6
 
 #endif

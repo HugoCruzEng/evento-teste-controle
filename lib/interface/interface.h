@@ -2,7 +2,7 @@
 #define interface_h
 
 // This class implements all kind of interfaces necessary for communication between equipment/device controllers and HMI/plant
-#include "../signal/signals_list.h"
+#include "../signal/signal.h"
 #include "../configuration/config.h"
 
 #include <vector>
@@ -12,19 +12,15 @@
 class Interface {
     
     private:
-        void model_receive_data();
-        void model_send_data();
-        
         void setup_hmi_data();
-        void hmi_receive_data();
-        void hmi_send_data();
 
     public:
         Interface();
         
         void start_signal_interfaces(); 
-        void receive_data();
-        void send_data();
+        void model_receive_data();
+        void model_send_data();
+        void update_interface_data();
 };
 
 #endif
